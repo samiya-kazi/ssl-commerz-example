@@ -9,10 +9,10 @@ async function initializePayment (req, res) {
       total_amount: amount,
       currency: 'BDT',
       tran_id: orderId, // use unique tran_id for each api call
-      success_url: `http://localhost:${config.PORT}/payment/success`,
-      fail_url: `http://localhost:${config.PORT}/payment/fail`,
+      success_url: `http://localhost:${config.PORT}/payment/success?orderId=${orderId}&amount=${amount}`,
+      fail_url: `http://localhost:${config.PORT}/payment/fail?orderId=${orderId}&amount=${amount}`,
       cancel_url: `http://localhost:${config.PORT}/payment/cancel`,
-      ipn_url: 'http://localhost:3030/ipn',
+      ipn_url: `http://localhost:${config.PORT}/payment/ipn`,
       shipping_method: 'Courier',
       product_name: 'Computer.',
       product_category: 'Electronic',
@@ -41,7 +41,6 @@ async function initializePayment (req, res) {
 
     sslcz.init(data).then(apiResponse => {
         // Redirect the user to payment gateway
-        console.log(apiResponse);
         let GatewayPageURL = apiResponse.GatewayPageURL
         res.send({redirect: GatewayPageURL })
         console.log('Redirecting to: ', GatewayPageURL)
@@ -56,9 +55,8 @@ async function initializePayment (req, res) {
 
 async function successfulPayment (req, res) {
   try {
-    const data = req.body;
-    console.log(data);
-    res.redirect("http://localhost:5173/success");
+    const { orderId, amount } = req.query;
+    res.redirect("http://localhost:5173/success" + `?orderId=${orderId}&amount=${amount}`);
 
   } catch (error) {
     console.log(error);
@@ -68,9 +66,8 @@ async function successfulPayment (req, res) {
 
 async function failedPayment (req, res) {
   try {
-    const data = req.body;
-    console.log(data);
-    res.redirect("http://localhost:5173/fail");
+    const { orderId, amount } = req.query;
+    res.redirect("http://localhost:5173/fail" + `?orderId=${orderId}&amount=${amount}`);
 
   } catch (error) {
     console.log(error);

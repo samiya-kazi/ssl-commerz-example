@@ -41,8 +41,9 @@ async function initializePayment (req, res) {
 
     sslcz.init(data).then(apiResponse => {
         // Redirect the user to payment gateway
+        console.log(apiResponse);
         let GatewayPageURL = apiResponse.GatewayPageURL
-        res.redirect(GatewayPageURL)
+        res.send({redirect: GatewayPageURL })
         console.log('Redirecting to: ', GatewayPageURL)
     });
 

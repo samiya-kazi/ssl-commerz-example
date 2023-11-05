@@ -15,8 +15,8 @@ function FormPage() {
     const url = "http://localhost:3000/payment/init"
 
     try {
-      const res = await axios.post(url, data);
-      console.log(res)
+      const res = await axios.post<{redirect: string}>(url, data);
+      window.location.replace(res.data.redirect);
     } catch (error) {
       console.log(error);
     }
